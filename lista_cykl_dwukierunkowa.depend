@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1542210690 source:d:\uniwersytet 3-go wieku\testowanie\lista_cykl_dwukierunkowa\main.cpp
+	<iostream>
+	<cstdio>
+	<ctime>
+
