@@ -13,23 +13,21 @@ struct Node
 };
 Node *head=nullptr;
 int licznik=0;
-
 //********************************************************************************8
-void wstawia_elem(int klucz)
+void wstawia_elem(int klucz)//gotowe
 {
-    srand(time(0));
+    double los=rand()%1000;
 //alokacja pamieci na nowy wezel listy
         Node *nowy= new Node;
         if(!nowy)
         {
             std::cout<<"Nie udalo sie utworzyc nowego wezla listy!\n Brak pamieci!"<<std::endl;
-            //tutaj trzeba dac przerwanie
+            return;
         }
 //inicjalizacja liczbowych zmiennych wezla:
         nowy->klucz=klucz;
-        nowy->los=rand()%1000;
+        nowy->los=los;
         nowy->ch='T';
-
 //wstawianie wezla do listy:
 //***********************************************************************************************
 //Gdy lista jest pusta:
@@ -42,15 +40,9 @@ void wstawia_elem(int klucz)
             nowy->next=nowy;
             nowy->prev=nowy;
             licznik++;
-
-            //test adresow - pozniej do usuniecia
-            //cout<<"Test adresow I-go wezla:"<<endl;
-            //cout<<"nowy = "<<nowy<<"    "<<"head = "<<head<<"   "<<"nowy->next = "<<nowy->next<<
-           // "   "<<"nowy->prev = "<<nowy->prev<<endl;
-        }//OK
+        }
 //***************************************************************************************************
 //Wstawianie z szukaniem miejsca do niepustej listy:
-
         //Gdy wstawiamy przed HEADa:
         else if((nowy->klucz)<(ptr->klucz))
         {
@@ -60,16 +52,8 @@ void wstawia_elem(int klucz)
             head=nowy;
             head->prev->next=head;  //wazne odnowienie polaczenia z koncem listy
             licznik++;
-            //ok
-//***************************************************************************************************
-            //test adresow - pozniej do usuniecia
-            //cout<<"Test adresow II-go wezla klucz<klucz heada:"<<endl;
-           // cout<<"nowy = "<<nowy<<"    "<<"head = "<<head<<"   "<<"nowy->next = "<<nowy->next<<
-           // "   "<<"nowy->prev = "<<nowy->prev<<endl;
-
         }
 //****************************************************************************************************
-
             else
             {//gdy wstawiamy gdzies w srodku, lub na koncu:
         do
@@ -79,7 +63,6 @@ void wstawia_elem(int klucz)
                 std::cout<<"Powtorzona kluczowa wartosc! "<<nowy->klucz<<" = "<<ptr->klucz<<std::endl;
                 break;
             }
-        //dotad chyba jest dobrze
             if(nowy->klucz<ptr->klucz)//wstawienie przed
             {
                 nowy->next=ptr;
@@ -105,14 +88,10 @@ void wstawia_elem(int klucz)
             }
 }
 //*************************************************************************************************************
-
-
-
-void wstawia_X_elem(int X)
+//hurtowe wstawianie wezlow do listy
+void wstawia_X_elem(int X)//gotowe
 {
-    //gdy powtorki...
-    //gdy brak pamieci...S
-    srand(time(0));
+    //srand(time(0));
     int los;
     //gdy powtorki...
     //gdy brak pamieci...S
@@ -122,6 +101,7 @@ bool tabl_losowych[99901]{};            //tablica do spkrawdzania powtarzalnosci
 if(head)
 {
     Node * ptr=head;
+    //przejscie przez liste aby zaktualizowac tablice wystepujacych juz w liscie kluczzy
     do
     {
         if(ptr->klucz>=99&&ptr->klucz<=99999)
@@ -141,180 +121,257 @@ for(int i=0; i<X; i++)
         while(tabl_losowych[los]);
         tabl_losowych[los]=true;        //zapamietanie wylosowania danej liczb
         los+=99;
-//***********************************************************************************************
-wstawia_elem(los);
+    //wywolanie funkcji wstawiajacej dla wylosowanego klucza
+        wstawia_elem(los);
 }
-
-
 }
-
+//*********************************************************************************************************
 void prezentacja_poczatek(int liczba_wezlow)
-{
-    //funkcja wypisuje n poczatkowych wezlow od czola listy
-    //moze ich tyle nie byc...
-    //lista moze byc pusta
-
-}
-
-void prezentacja_koniec(int liczba_wezlow)
-{
-    //funkcja wypisuje n koncowych wezlow listy
-    //moze byc ich mniej ...
-    //lista moze byc pusta
-}
-
-void szukaj(int klucz)
-{
+{//funkcja wypisuje n poczatkowych wezlow od czola listy
     Node * ptr=head;
-    //funkcja wyszukuje wezel o zadanym kluczu i wypisuje go
-    //moze go nie znalezc...
-    //lizta moze bbyc pusta...
-    if(head)
+        cout<<"Wyswietlenie "<<liczba_wezlow<<" poczatkowych wezlow listy:"<<endl;
+    if(!head)
     {
-        Node * ptr=head;
-        int sukces=0;
+        cout<<"Blad!! Lista jest pusta. Nie mozna nic wyswietlic."<<endl;
+        return;
+    }
+    else if(licznik<liczba_wezlow)
+    {
+        cout<<"Nie ma tylu wezlow w liscie"<<endl;
+        cout<<"Wyswietlimy tylko "<<licznik<<" wezlow"<<endl;
+    }
+    //ptr=ptr->prev;
+cout<<"zawartosc head: "<<ptr->klucz<<endl;
+    for(int i=0; i<liczba_wezlow; i++)
+    {
+        cout<<"Klucz: "<<ptr->klucz<<"  "<<ptr->los<<"  "<<ptr->ch<<endl;
+        ptr=ptr->next;
+        if(ptr==head)
+            return;
+    }
+    delete ptr;
+}
+
+//**************************************************************************************************888
+void prezentacja_koniec(int liczba_wezlow)
+{//funkcja wypisuje n koncowych wezlow listy
+
+    cout<<"Wyswietlenie "<<liczba_wezlow<<" wezlow listy:"<<endl;
+    if(!head)
+    {
+        cout<<"Blad!! Listaa jest pusta. Nie mozna nic wyswietlic."<<endl;
+        return;
+    }
+    else if(licznik<liczba_wezlow)
+    {
+        cout<<"Nie ma tylu wezlow w liscie"<<endl;
+        cout<<"Wyswietlimy tylko "<<licznik<<" wezlow"<<endl;
+        liczba_wezlow=licznik;
+    }
+    Node * ptr=head;
+    ptr=ptr->prev;
+    for(int i=0; i<liczba_wezlow; i++)
+    {
+        cout<<"Klucz: "<<ptr->klucz<<"  "<<ptr->los<<"  "<<ptr->ch<<endl;
+        ptr=ptr->prev;
+    }
+    delete ptr;
+}
+//*******************************************************************************************************
+void szukaj(int klucz)//gotowe
+{
+    //funkcja wyszukuje wezel o zadanym kluczu i wypisuje go
+    Node * ptr=head;
+    if(head)//lizta moze byc pusta...
+    {
+        //Node * ptr=head;
         do
         {
             if(ptr->klucz==klucz)
                 {
-                    sukces++;
                     cout<<"adres wezla "<<ptr<<"   szukany klucz : "<<ptr->klucz<<
                     "   wartosc losowa double: "<<ptr->los<<endl;
                     break;
                 }
             ptr=ptr->next;
         }while(ptr!=head);
-            if(!sukces)
+            if(ptr==head)//(!sukces)
                 cout<<"Niestety nie udalo sie odnalexc szukanej wartosci..."<<endl;
     }
     else
         {
             cout<<"Lista nie zawiera zadnych elementow!"<<endl;
         }
-
-
-
+        ptr=nullptr;
 }
-
-void usuwanie_elementu(int klucz)
-{
-    //funkcja usuwa z listy wezel o zadanym kluczu
-    //moze go tam nie byc...
-    //lista moze byc pusta...
-    if(!head)
+//*********************************************************************************************************
+void usuwanie_elementu(int k)//gotowe
+{//funkcja usuwa z listy wezel o zadanym kluczu
+    if(!head)//gdy lista jest pusta
         {
-            cout<<"Lista nie zawiera zadnych elementow do usuniecia!"<<endl;
+            cout<<"Lista jest pusta i nie zawiera zadnych elementow do usuniecia!"<<endl;
             return;
         }
-
     Node * ptr=head;
+    //lista moze byc pusta ,,, po usunieciu
     if(head)
     {
         do
         {
             if(ptr->klucz==k)   //znalezienie wezla z szukanym kluczem
             {
-                cout<<"znaleziony"<<endl;
-                    //gdy X jest headem...
-                    if(ptr==head)
+                cout<<"wezel o kluczu "<<k<<" znaleziony..."<<endl;
+
+                    if(ptr==head)//gdy X jest headem...
                     {
-                        cout<<"byl headem"<<endl;
-                        //czy X to jedyny element listy?
-                        if(ptr->next==ptr)
+                        cout<<"byl headem ";
+                        if(ptr->next==ptr)//czy X to jedyny element listy?
                         {
-                            cout<<"byl jedynym wezlem:"<<endl;
-                            //trzeba wyzerowac heaada...
+                            cout<<"i w dodatku jedynym wezlem "<<endl;
+
+                            head=nullptr;//wiec trzeba wyzerowac heaada...
                             delete ptr;
-                            head=nullptr;//chyba ok
+                            licznik--;
+                            cout<<"...juz go nie ma wsrod nas."<<endl;
                             return;
                         }
                         else
                         {
-                            cout<<"head, ale nie byl jedyny"<<endl;
+                            cout<<", ale nie byl jedyny"<<endl;
                             //trzeba bedzie przestawic heada...
                             head->prev->next=head->next;
                             head->next->prev=head->prev;
                             head=ptr->next;
                             delete ptr;
+                            licznik--;
+                            cout<<"Juz po nim... "<<endl;
                             return;
                         }
                     }
-                //gdy to nie X, ale nastepny jest headem...
-                else if(ptr->next==head)
+                //gdy to nastepny po X jest headem...
+                else //if(ptr!=head)//else if(ptr->next==head)
                 {
-
-                }
-                else
-                {
-                    //czyli X jest gdzies w srodku
-                    //usuwanie wezla
                     ptr->prev->next=ptr->next;
                     ptr->next->prev=ptr->prev;
                     licznik--;
-                    break;  //lub return;
-
+                    delete ptr;
+                    cout<<"Byl gdzies w srodku listy. "<<endl;
+                    return;
                 }
             }
             ptr=ptr->next;
         }while(ptr!=head);  //dotarcie do konca listy
-            if(ptr==head) //lub ptr==head  wtedy komunikat
+
+        if(ptr==head) //lub ptr==head  wtedy komunikat
                 cout<<"Niestety nie udalo sie odnalexc i usunac wezla o kluczu: "<<k<<endl;
     }
-        //ptr=nullptr;
+        ptr=nullptr;
 }
+//************************************************************************************************************88
+void usuwanie_calej_listy()//gotowe
+{
+    if(!licznik)//gdy lista jest pusta
+        {
+            cout<<"Lista jest pusta i nie zawiera zadnych elementow do usuniecia!"<<endl;
+            return;
+        }
+    while(head)
+    {
+                Node * ptr=head;
+                        //cout<<"byl headem ";
 
+                        if(ptr->next==ptr)//czy X to jedyny element listy?
+                        {
+                            //cout<<"i w dodatku jedynym wezlem "<<endl;
 
-
+                            head=nullptr;//wiec trzeba wyzerowac heaada...
+                            delete ptr;
+                            licznik--;
+                            //cout<<"...juz go nie ma wsrod nas."<<endl;
+                            //return;
+                        }
+                        else
+                        {
+                            //cout<<", ale nie byl jedyny"<<endl;
+                            //trzeba bedzie przestawic heada...
+                            head->prev->next=head->next;
+                            head->next->prev=head->prev;
+                            head=ptr->next;
+                            //delete ptr;
+                            licznik--;
+                            //cout<<"Juz po nim... "<<endl;
+                        }
+                        //cout<<"Licznik w funkcji: "<<licznik<<endl;
+    }
+            if((!head)||(!licznik))
+            {
+                cout<<"Lista usunieta..."<<endl;
+                return;
+            }
+}
 
 int main()
 {
-//wczytanie z pliku
+    srand(time(0));
+//wczytanie z pliku************************************************************************8
     int n, klucz1;
     int k1, k2, k3, k4, k5;
 
-
-    FILE* fp=fopen("lab02.txt", "r");
+    FILE* fp=fopen("lab2.txt", "r");
     if(fp==NULL)
         return -1;
     fscanf(fp, "%d %d %d %d %d %d", &n, &k1, &k2, &k3, &k4, &k5);
     fclose(fp);
-
-
-
-
-
-//czas start;
+//czas start;*************************************************************************************8
 clock_t begin, end;
     double time_spent;
     begin = clock();
-
 //zainicjuj listê;
 
 //wyszukanie klucza k1;
-
+szukaj(k1);
 //wstawienie X elementów do listy;
-
+wstawia_X_elem(n);
 //wypisz liczbê wêz³ów w liœcie;
+cout<<"liczba wezlow: "<<licznik<<endl;
 //prezentacja wartoœci kluczowych pierwszych 20 wêz³ów pocz¹wszy od czo³a listy;
+prezentacja_poczatek(20);
 //wstaw element o wartoœci klucza k2;
+wstawia_elem(k2);
 //prezentacja wartoœci kluczowych pierwszych 20 wêz³ów pocz¹wszy od czo³a listy;
+prezentacja_poczatek(20);
 //wstaw element o wartoœci klucza k3;
+wstawia_elem(k3);
 //prezentacja wartoœci kluczowych pierwszych 20 wêz³ów pocz¹wszy od czo³a listy;
+prezentacja_poczatek(20);
 //wstaw element o wartoœci klucza k4;
+wstawia_elem(k4);
 //prezentacja wartoœci kluczowych pierwszych 20 wêz³ów pocz¹wszy od czo³a listy;
+prezentacja_poczatek(20);
 //wstaw element o wartoœci klucza k5;
+wstawia_elem(k5);
 //usuñ element o wartoœci klucza k3;
+usuwanie_elementu(k3);
 //prezentacja wartoœci kluczowych pierwszych 20 wêz³ów pocz¹wszy od czo³a listy;
+prezentacja_poczatek(20);
 //usuñ element o wartoœci klucza k2;
+usuwanie_elementu(k2);
 //prezentacja wartoœci kluczowych pierwszych 20 wêz³ów pocz¹wszy od czo³a listy;
+prezentacja_poczatek(20);
 //usuñ element o wartoœci klucza k5;
+usuwanie_elementu(k5);
 //wypisz liczbê wêz³ów w liœcie;
+cout<<"liczba wezlow: "<<licznik<<endl;
 //wyszukaj element o wartoœci klucza k5;
+szukaj(k5);
 //prezentacja wartoœci kluczowych ostatnich 11 wêz³ów;
+prezentacja_koniec(11);
 //usuñ wszystkie elementy listy;
+usuwanie_calej_listy();
 //prezentacja wartoœci kluczowych ostatnich 11 wêz³ów;
+prezentacja_koniec(11);
 //wypisz liczbê wêz³ów w liœcie;
-
+cout<<"liczba wezlow: "<<licznik<<endl;
 //czas stop;
 end = clock();
 time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
