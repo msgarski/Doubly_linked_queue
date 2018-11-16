@@ -19,7 +19,6 @@ void wstawia_elem(Node ** head, int klucz)//gotowe
     double los=rand()%1000;
 //alokacja pamieci na nowy wezel listy
         Node *nowy= new Node;
-        cout<<"nowy "<<nowy<<endl;
         if(!nowy)
         {
             std::cout<<"Nie udalo sie utworzyc nowego wezla listy!\n Brak pamieci!"<<std::endl;
@@ -29,7 +28,6 @@ void wstawia_elem(Node ** head, int klucz)//gotowe
         nowy->klucz=klucz;
         nowy->los=los;
         nowy->ch='T';
-cout<<"nowy klucz "<<nowy->klucz<<endl;
 
 //wstawianie wezla do listy:
 //Gdy lista jest pusta:
@@ -39,8 +37,6 @@ cout<<"nowy klucz "<<nowy->klucz<<endl;
             nowy->next=nowy;
             nowy->prev=nowy;
             licznik++;
-cout<<"head prev"<<(*head)->prev<<endl;
-cout<<"licznik :"<<licznik<<endl;
         }//OK
 //***************************************************************************************************
 //Wstawianie z szukaniem miejsca do niepustej listy:
@@ -63,7 +59,7 @@ cout<<"licznik :"<<licznik<<endl;
                 {   //sprawdzamy, czy to nie duplikat:
                     if(nowy->klucz==ptr->klucz)
                     {
-                        std::cout<<"Powtorzona kluczowa wartosc! "<<nowy->klucz<<" = "<<ptr->klucz<<std::endl;
+                        std::cout<<"Powtorzona wartosc klucza! "<<nowy->klucz<<" = "<<ptr->klucz<<std::endl;
                         break;
                     }
                     if(nowy->klucz<ptr->klucz)//wstawienie przed
@@ -89,7 +85,6 @@ cout<<"licznik :"<<licznik<<endl;
             while(ptr!=*head);
             ptr=nullptr;
             }
-//   koniec tworzenia wezla listy
 }
 
 //*************************************************************************************************************
@@ -126,6 +121,7 @@ if(*head)
                 wstawia_elem(head, los);
         }
     ptr=nullptr; //oslepienie wskaznika
+        cout<<"Hurtowe wstawianie "<<X<<" wezlow do listy"<<endl<<endl;
 }
 
 void prezentacja_poczatek(Node *head, int liczba_wezlow)//przeniesione
@@ -144,8 +140,8 @@ void prezentacja_poczatek(Node *head, int liczba_wezlow)//przeniesione
         cout<<"Wyswietlimy tylko "<<licznik<<" wezlow"<<endl;
     }
     Node * ptr=head;
-cout<<"zawartosc head: "<<ptr->klucz<<endl;
-    for(int i=0; i<licznik; i++)//tu przestawilem - trzeva przywrocic!!!
+//cout<<"zawartosc head: "<<ptr->klucz<<endl;
+    for(int i=0; i<liczba_wezlow; i++)//tu przestawilem - trzeva przywrocic!!!
     {
         cout<<"Klucz: "<<ptr->klucz<<"  "<<ptr->los<<"  "<<ptr->ch<<endl;
         ptr=ptr->next;
@@ -187,7 +183,7 @@ void prezentacja_koniec(Node * head, int liczba_wezlow) //przeniesione ale jest 
 void szukaj(Node *head, int klucz)//gotowe i przeniesione
 {
     //funkcja wyszukuje wezel o zadanym kluczu i wypisuje go
-    cout<<"Szukamy wezla o kluczu: "<<klucz<<endl<<endl;
+    cout<<"Szukamy wezla o kluczu: "<<klucz<<endl;
     Node * ptr=head;
     if(head)//lizta moze byc pusta...
     {
@@ -202,20 +198,126 @@ void szukaj(Node *head, int klucz)//gotowe i przeniesione
             ptr=ptr->next;
         }while(ptr!=head);
             if(ptr==head)
-                cout<<"Niestety nie udalo sie odnalezc w liscie wartosci "<<klucz<<endl;
+                cout<<"Niestety nie udalo sie odnalezc w liscie wartosci "<<klucz<<endl<<endl;
     }
     else
         {
-            cout<<"Lista nie zawiera zadnych elementow!"<<endl<<endl;
+            cout<<"Klucz "<<klucz<<" nie zostal znaleziony, poniewaz"<<endl<<"lista nie zawiera zadnych elementow!"<<endl<<endl;
         }
         ptr=nullptr;
 }
 
-
-
-
 //*********************************************************************************************************
+void usuwanie_elementu(Node ** head, int k)//gotowe
+{//funkcja usuwa z listy wezel o zadanym kluczu
+    cout<<"Usuwamy wezel o kluczu: "<<k<<endl<<endl;
+    if(!*head)//gdy lista jest pusta
+        {
+            cout<<"Lista jest pusta i nie zawiera zadnych elementow do usuniecia!"<<endl<<endl;
+            return;
+        }
+    Node * ptr=*head;
+    //lista moze byc pusta ,,, po usunieciu
+    if(*head)
+    {
+        do
+        {
+            if(ptr->klucz==k)   //znalezienie wezla z szukanym kluczem
+            {
+                cout<<"wezel o kluczu "<<k<<" znaleziony..."<<endl;
 
+                    if(ptr==*head)//gdy X jest headem...
+                    {
+                        cout<<"byl to head ";
+
+                        if(ptr->next==ptr)//czy X to jedyny element listy?
+                        {
+                            cout<<"i w dodatku ostatni wezel "<<endl;
+                            *head=nullptr;//wiec trzeba wyzerowac heaada...
+                            delete ptr;
+                            licznik--;
+                            cout<<"...juz go nie ma wsrod nas."<<endl<<endl;
+                            return;
+                        }
+                        else
+                        {
+                            cout<<"i zostal usuniety"<<endl<<endl;
+                            //trzeba bedzie przestawic heada...
+                            (*head)->prev->next=(*head)->next;
+                            (*head)->next->prev=(*head)->prev;
+                            *head=ptr->next;
+                            delete ptr;
+                            licznik--;
+                            return;
+                        }
+                    }
+                //gdy to nastepny po X jest headem...
+                else //if(ptr!=head)//else if(ptr->next==head)
+                {
+                    ptr->prev->next=ptr->next;
+                    ptr->next->prev=ptr->prev;
+                    licznik--;
+                    delete ptr;
+                    cout<<"Byl gdzies w srodku listy. Usuniety..."<<endl<<endl;
+                    return;
+                }
+            }
+            ptr=ptr->next;
+        }while(ptr!=*head);  //dotarcie do konca listy
+
+        if(ptr==*head) //lub wekasowac
+                cout<<"Niestety nie udalo sie odnalezc i usunac wezla o kluczu: "<<k<<endl<<endl;
+    }
+        ptr=nullptr;
+}
+
+//************************************************************************************************************88
+void usuwanie_calej_listy(Node **head)//gotowe
+{
+    //zprawdzenie globalnego licznika, w razie czego...
+    int dl_kolejki=0;
+    if(!*head)
+        {
+            cout<<"Lista jest pusta i nie zawiera zadnych elementow do usuniecia!"<<endl;
+            return;
+        }
+    else
+        {
+            Node *ptr=*head;
+            do
+            {
+                dl_kolejki++;
+                ptr=ptr->next;
+            }while(ptr!=*head);
+            cout<<"porownanie obu licznikow: "<<dl_kolejki<<" = "<<licznik<<endl<<"Mozna usuwac..."<<endl<<endl;
+
+            //zaczynamy usuwanie
+            cout<<"Usuwanie wszystkich wezlow listy... calutkiej listy!"<<endl<<endl;
+
+            while(*head)
+                {
+                ptr=*head;
+                //cout<<"na razie dobrze"<<endl;
+                    if(ptr->next==ptr)//czy X to jedyny element listy?
+                        {
+                            *head=nullptr;//wiec trzeba wyzerowac heaada...
+                            delete ptr;
+                            licznik--;
+                            cout<<"...juz ich nie ma wsrod nas. licznik = "<<licznik<<endl<<endl;
+                            return;
+                        }
+                        else
+                        {
+                            //trzeba bedzie przestawic heada...
+                            (*head)->prev->next=(*head)->next;
+                            (*head)->next->prev=(*head)->prev;
+                            *head=ptr->next;
+                            licznik--;
+                        }
+                    }
+                ptr=nullptr;
+        }
+}
 //************************************************************************************************************88
 
 int main()
@@ -242,67 +344,71 @@ clock_t begin, end;
     szukaj(head, k1);
 
 //wstawienie X elementów do listy;
-    wstawia_X_elem(n);
+    wstawia_X_elem(&head, n);
 
 //wypisz liczbê wêz³ów w liœcie;
     cout<<"liczba wezlow: "<<licznik<<endl;
 
 //prezentacja wartoœci kluczowych pierwszych 20 wêz³ów pocz¹wszy od czo³a listy;
-    prezentacja_poczatek(20);
+    prezentacja_poczatek(head, 20);
 
 //wstaw element o wartoœci klucza k2;
-    wstawia_elem(k2);
+cout<<"Wstawiamy element "<<k2<<endl;
+    wstawia_elem(&head, k2);
 
 //prezentacja wartoœci kluczowych pierwszych 20 wêz³ów pocz¹wszy od czo³a listy;
-    prezentacja_poczatek(20);
+    prezentacja_poczatek(head, 20);
 
 //wstaw element o wartoœci klucza k3;
-    wstawia_elem(k3);
+cout<<"Wstawiamy element "<<k3<<endl;
+    wstawia_elem(&head, k3);
 
 //prezentacja wartoœci kluczowych pierwszych 20 wêz³ów pocz¹wszy od czo³a listy;
-    prezentacja_poczatek(20);
+    prezentacja_poczatek(head, 20);
 
 //wstaw element o wartoœci klucza k4;
-    wstawia_elem(k4);
+cout<<"Wstawiamy element "<<k4<<endl;
+    wstawia_elem(&head, k4);
 
 //prezentacja wartoœci kluczowych pierwszych 20 wêz³ów pocz¹wszy od czo³a listy;
-    prezentacja_poczatek(20);
+    prezentacja_poczatek(head, 20);
 
 //wstaw element o wartoœci klucza k5;
-    wstawia_elem(k5);
+cout<<"Wstawiamy element "<<k5<<endl;
+    wstawia_elem(&head, k5);
 
 //usuñ element o wartoœci klucza k3;
-    usuwanie_elementu(k3);
+    usuwanie_elementu(&head, k3);
 
 //prezentacja wartoœci kluczowych pierwszych 20 wêz³ów pocz¹wszy od czo³a listy;
-    prezentacja_poczatek(20);
+    prezentacja_poczatek(head, 20);
 
 //usuñ element o wartoœci klucza k2;
-    usuwanie_elementu(k2);
+    usuwanie_elementu(&head, k2);
 
 //prezentacja wartoœci kluczowych pierwszych 20 wêz³ów pocz¹wszy od czo³a listy;
-    prezentacja_poczatek(20);
+    //prezentacja_poczatek(head, 20);
 
 //usuñ element o wartoœci klucza k5;
-    usuwanie_elementu(k5);
+    usuwanie_elementu(&head, k5);
 
 //wypisz liczbê wêz³ów w liœcie;
-    cout<<"liczba wezlow: "<<licznik<<endl;
+    cout<<"liczba wezlow: "<<licznik<<endl<<endl;
 
 //wyszukaj element o wartoœci klucza k5;
-    szukaj(k5);
+    szukaj(head, k5);
 
 //prezentacja wartoœci kluczowych ostatnich 11 wêz³ów;
-    prezentacja_koniec(11);
+    //prezentacja_koniec(head, 11);
 
 //usuñ wszystkie elementy listy;
-    usuwanie_calej_listy();
+    usuwanie_calej_listy(&head);
 
 //prezentacja wartoœci kluczowych ostatnich 11 wêz³ów;
-    prezentacja_koniec(11);
+    prezentacja_koniec(head, 11);
 
 //wypisz liczbê wêz³ów w liœcie;
-    cout<<"liczba wezlow: "<<licznik<<endl;
+    cout<<"liczba wezlow: "<<licznik<<endl<<endl;
 
 //czas stop;
     end = clock();
