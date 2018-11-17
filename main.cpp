@@ -112,7 +112,7 @@ if(*head)
             //losowanie unikalnej liczby i przes³anie jej do wezla listy
             do
                 {
-                    los=(rand()%99901);
+                    los=((rand()*RAND_MAX+rand())%99901);
                 }
                 while(tabl_losowych[los]);
                 tabl_losowych[los]=true;        //zapamietanie wylosowania danej liczb
@@ -376,6 +376,7 @@ cout<<"Wstawiamy element "<<k4<<endl;
 //wstaw element o wartoœci klucza k5;
 cout<<"Wstawiamy element "<<k5<<endl;
     wstawia_elem(&head, k5);
+    prezentacja_koniec(head, 11);
 
 //usuñ element o wartoœci klucza k3;
     usuwanie_elementu(&head, k3);
@@ -399,7 +400,7 @@ cout<<"Wstawiamy element "<<k5<<endl;
     szukaj(head, k5);
 
 //prezentacja wartoœci kluczowych ostatnich 11 wêz³ów;
-    //prezentacja_koniec(head, 11);
+    prezentacja_koniec(head, 11);
 
 //usuñ wszystkie elementy listy;
     usuwanie_calej_listy(&head);
